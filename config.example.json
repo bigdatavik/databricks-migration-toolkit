@@ -1,0 +1,40 @@
+{
+  "_comment": "This is an example configuration file. Copy to config.json and update with your values.",
+  "source": {
+    "host": "https://adb-1234567890123456.12.azuredatabricks.net",
+    "token": "dapi_your_source_workspace_token_here",
+    "workspace_id": "1234567890123456",
+    "description": "Source workspace to migrate FROM"
+  },
+  "target": {
+    "host": "https://adb-9876543210987654.12.azuredatabricks.net",
+    "token": "dapi_your_target_workspace_token_here",
+    "workspace_id": "9876543210987654",
+    "description": "Target workspace to migrate TO"
+  },
+  "migration_settings": {
+    "dry_run": false,
+    "log_level": "INFO",
+    "backup_before_migration": true,
+    "continue_on_error": false,
+    "batch_size": 50
+  },
+  "filters": {
+    "_comment": "Optional filters to limit what gets migrated",
+    "include_system_folders": false,
+    "exclude_paths": [
+      "/Users/system",
+      "/Shared/archived"
+    ],
+    "job_name_pattern": null,
+    "cluster_name_pattern": null
+  },
+  "mappings": {
+    "_comment": "Optional mappings for object renaming during migration",
+    "user_email_domain_mapping": {
+      "old_domain.com": "new_domain.com"
+    },
+    "instance_pool_id_mapping": {},
+    "policy_id_mapping": {}
+  }
+}
