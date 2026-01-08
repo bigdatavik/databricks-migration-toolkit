@@ -1,0 +1,172 @@
+# Example: Simple Migration with Users, Clusters, and Notebooks
+
+# Configure variables for this example
+groups = {
+  data_engineers = {
+    display_name         = "Data Engineers"
+    allow_cluster_create = true
+  }
+  data_scientists = {
+    display_name         = "Data Scientists"
+    allow_cluster_create = true
+  }
+}
+
+users = {
+  john = {
+    user_name    = "john.doe@company.com"
+    display_name = "John Doe"
+  }
+  jane = {
+    user_name    = "jane.smith@company.com"
+    display_name = "Jane Smith"
+  }
+}
+
+group_members = {
+  john_engineers = {
+    group_key = "data_engineers"
+    user_key  = "john"
+  }
+  jane_scientists = {
+    group_key = "data_scientists"
+    user_key  = "jane"
+  }
+}
+
+cluster_policies = {
+  standard = {
+    name = "Standard Policy"
+    definition = {
+      "spark_version" = {
+        "type"  = "fixed"
+        "value" = "13.3.x-scala2.12"
+      }
+      "node_type_id" = {
+        "type"  = "allowlist"
+        "values" = ["Standard_DS3_v2", "Standard_DS4_v2"]
+      }
+    }
+  }
+}
+
+clusters = {
+  shared_cluster = {
+    cluster_name            = "Shared Analytics Cluster"
+    spark_version           = "13.3.x-scala2.12"
+    node_type_id            = "Standard_DS3_v2"
+    autotermination_minutes = 120
+    autoscale = {
+      min_workers = 2
+      max_workers = 8
+    }
+    spark_conf = {
+      "spark.databricks.delta.preview.enabled" = "true"
+    }
+    custom_tags = {
+      Team = "Analytics"
+    }
+  }
+}
+
+sql_warehouses = {
+  analytics_warehouse = {
+    name                = "Analytics Warehouse"
+    cluster_size        = "Medium"
+    max_num_clusters    = 2
+    auto_stop_mins      = 120
+    enable_photon       = true
+    warehouse_type      = "PRO"
+  }
+}
+
+secret_scopes = {
+  app_secrets = {
+    name = "application-secrets"
+  }
+}
+
+# Note: Secret values must be set separately
+secrets = {
+  db_password = {
+    scope_key    = "app_secrets"
+    key          = "database_password"
+    string_value = "CHANGE_ME"  # Set actual value in terraform.tfvars
+  }
+}
+
+directories = {
+  shared = {
+    path = "/Shared/Analytics"
+  }
+  team = {
+    path = "/Shared/Analytics/Team"
+  }
+}
+
+repos = {
+  data_pipelines = {
+    url          = "https://github.com/yourorg/data-pipelines"
+    git_provider = "github"
+    path         = "/Repos/Production/data-pipelines"
+    branch       = "main"
+  }
+}
+
+jobs = {
+  daily_etl = {
+    name                = "Daily ETL Pipeline"
+    max_concurrent_runs = 1
+    
+    schedule = {
+      quartz_cron_expression = "0 0 2 * * ?"  # 2 AM daily
+      timezone_id            = "America/Los_Angeles"
+    }
+    
+    email_notifications = {
+      on_failure = ["alerts@company.com"]
+    }
+    
+    tasks = [
+      {
+        task_key = "extract"
+        
+        notebook_task = {
+          notebook_path = "/Shared/Analytics/extract"
+        }
+        
+        new_cluster = {
+          spark_version = "13.3.x-scala2.12"
+          node_type_id  = "Standard_DS3_v2"
+          num_workers   = 2
+        }
+      },
+      {
+        task_key = "transform"
+        
+        notebook_task = {
+          notebook_path = "/Shared/Analytics/transform"
+        }
+        
+        new_cluster = {
+          spark_version = "13.3.x-scala2.12"
+          node_type_id  = "Standard_DS3_v2"
+          num_workers   = 4
+        }
+        
+        depends_on = ["extract"]
+      }
+    ]
+    
+    tags = {
+      Pipeline = "ETL"
+    }
+  }
+}
+
+# Common tags for all resources
+common_tags = {
+  Environment = "production"
+  ManagedBy   = "terraform"
+  Project     = "migration"
+}

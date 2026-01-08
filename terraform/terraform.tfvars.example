@@ -1,0 +1,26 @@
+# Databricks Workspace Configuration
+
+# Source Workspace (to export from)
+source_workspace = {
+  host  = "https://adb-1234567890123456.12.azuredatabricks.net"
+  token = "dapi_your_source_token_here"
+}
+
+# Target Workspace (to deploy to)
+target_workspace = {
+  host  = "https://adb-9876543210987654.12.azuredatabricks.net"
+  token = "dapi_your_target_token_here"
+}
+
+# Environment
+environment = "production"
+
+# Tags to apply to all resources
+common_tags = {
+  Environment = "production"
+  ManagedBy   = "terraform"
+  Project     = "databricks-migration"
+}
+
+# Optional: Custom naming prefix
+resource_prefix = "migrated"

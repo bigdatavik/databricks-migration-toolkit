@@ -3,7 +3,22 @@
 > **Complete solution for migrating Databricks Unity Catalog workspaces from one environment to another**
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Terraform](https://img.shields.io/badge/terraform-1.0+-purple.svg)](https://www.terraform.io/)
 [![Databricks](https://img.shields.io/badge/Databricks-Unity%20Catalog-orange.svg)](https://www.databricks.com/)
+
+## 🎯 Two Approaches Available
+
+This toolkit provides **TWO migration approaches**:
+
+1. **🐍 Python Scripts** (Root directory) - Fast, imperative, script-based migration
+   - ✅ Best for: One-time migrations, quick setup
+   - ✅ Easier to learn and customize
+
+2. **🏗️ Terraform** (`/terraform` directory) - Declarative Infrastructure as Code
+   - ✅ Best for: Ongoing management, multi-environment
+   - ✅ State management and drift detection
+
+**Not sure which to use?** See [PYTHON_VS_TERRAFORM.md](PYTHON_VS_TERRAFORM.md) for detailed comparison.
 
 ## 📋 What This Does
 
